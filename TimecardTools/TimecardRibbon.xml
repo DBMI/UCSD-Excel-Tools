@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label="Timecard Tools">
+        <group id="TimecardGroup"
+               label="Monthly Report">
+			<button id="extendTimecard"
+					getImage="extendTimecard_GetImage"
+					label="Extend monthly report"
+					onAction="OnExtendTimecard"
+					screentip="Extends monthly report to new month"
+					size="large"
+					supertip="Extends monthly report to new month" />
+		</group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
