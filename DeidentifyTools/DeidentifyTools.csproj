@@ -21,11 +21,11 @@
     <ProjectTypeGuids>{BAA0C2D2-18E2-41B9-852F-F413020CAA33};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8863EEF3-11C6-45AA-8FB6-B4D306BE08E8}</ProjectGuid>
+    <ProjectGuid>{0A5B7788-B80B-421B-95C5-AE17445C7896}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <RootNamespace>FormatTools</RootNamespace>
-    <AssemblyName>FormatTools</AssemblyName>
+    <RootNamespace>DeidentifyTools</RootNamespace>
+    <AssemblyName>DeidentifyTools</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DefineConstants>VSTO40</DefineConstants>
     <ResolveComReferenceSilent>true</ResolveComReferenceSilent>
@@ -39,10 +39,10 @@
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
-    <ProductName>FormatTools</ProductName>
+    <ProductName>DeidentifyTools</ProductName>
     <PublisherName />
     <SupportUrl />
-    <FriendlyName>FormatTools</FriendlyName>
+    <FriendlyName>DeidentifyTools</FriendlyName>
     <OfficeApplicationDescription />
     <LoadBehavior>3</LoadBehavior>
   </PropertyGroup>
@@ -124,17 +124,18 @@
   -->
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="log4net, Version=3.3.0.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.3.3.0\lib\net462\log4net.dll</HintPath>
+    <Reference Include="Bogus, Version=35.6.5.0, Culture=neutral, PublicKeyToken=fa1bb3f3f218129a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bogus.35.6.5\lib\net40\Bogus.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Fastenshtein, Version=1.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fastenshtein.1.0.12\lib\net462\Fastenshtein.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleZipCode, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleZipCode.1.0.3\lib\net452\SimpleZipCode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -216,21 +217,46 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Block.cs" />
+    <Compile Include="ChooseAOrBForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseAOrBForm.Designer.cs" />
     <Compile Include="ChooseCategoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ChooseCategoryForm.Designer.cs" />
-    <Compile Include="DateConverter.cs" />
-    <Compile Include="Formatter.cs" />
-    <Compile Include="FormatToolsRibbon.cs" />
-    <Compile Include="MumpsDateConverter.cs" />
+    <Compile Include="ChooseHashLength.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseHashLength.Designer.cs" />
+    <Compile Include="ChooseNumBogusRecordsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseNumBogusRecordsForm.Designer.cs" />
+    <Compile Include="Deidentifier.cs" />
+    <Compile Include="DeidentifyToolsRibbon.cs" />
+    <Compile Include="GenerateFakeRecords.cs" />
+    <Compile Include="HiddenNames.cs" />
+    <Compile Include="HideThisNameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HideThisNameForm.Designer.cs" />
+    <Compile Include="MessageDirection.cs" />
+    <Compile Include="MessageDirectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageDirectionForm.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities.cs" />
-    <Compile Include="WordCounter.cs" />
+    <Compile Include="ZipCodeGenerator.cs" />
+    <EmbeddedResource Include="ChooseAOrBForm.resx" />
     <EmbeddedResource Include="ChooseCategoryForm.resx" />
+    <EmbeddedResource Include="ChooseHashLength.resx" />
+    <EmbeddedResource Include="ChooseNumBogusRecordsForm.resx" />
+    <EmbeddedResource Include="HideThisNameForm.resx" />
+    <EmbeddedResource Include="MessageDirectionForm.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -241,7 +267,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="FormatTools_TemporaryKey.pfx" />
+    <None Include="DeidentifyTools_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -251,13 +277,13 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RuleValidation.cs" />
     <Compile Include="SafeNamer.cs" />
-    <Compile Include="Striper.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="README.md" />
+    <None Include="test files\dates and times.xlsx" />
+    <None Include="test files\physician_names.xlsx" />
     <None Include="ThisAddIn.Designer.xml">
       <DependentUpon>ThisAddIn.cs</DependentUpon>
     </None>
@@ -267,32 +293,27 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FormatToolsRibbon.xml">
+    <EmbeddedResource Include="DeidentifyToolsRibbon.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\abacus.png">
+    <EmbeddedResource Include="pictures\fake_person.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\calendar with gear.png">
+    <EmbeddedResource Include="pictures\groucho.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\calendar.png">
+    <EmbeddedResource Include="pictures\hide_identity.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\copy_formatting.png">
+    <Content Include="pictures\rubber_clock.png" />
+    <EmbeddedResource Include="pictures\rubber_clock_small.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\paint roller.png">
+    <EmbeddedResource Include="pictures\toolbar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\spreadsheet.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="school_of_medicine.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="test files\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -302,10 +323,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FormatTools_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>DeidentifyTools_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>C2BA1EEB078DC007E07A4D3789CDC9AF318C9833</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>E113FCD09538C175E54DC5639A49A7F8B6A6AE0B</ManifestCertificateThumbprint>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->
@@ -315,8 +336,8 @@
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="Excel" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Excel" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\16.0\Excel\InstallRoot\Path#excel.exe" DebugInfoCommandLine="/x" AddItemTemplatesGuid="{51063C3A-E220-4D12-8922-BDA915ACD783}" />
-        <Host Name="Excel" GeneratedCodeNamespace="FormatTools" PublishedHash="69C324AB27932AA2FBF2B7EA72250886FF164DE6" IconIndex="0">
-          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" PublishedHash="CFA5D2A731387036F9EBEB1F4D1D89AD1816BB34" />
+        <Host Name="Excel" GeneratedCodeNamespace="DeidentifyTools" PublishedHash="69C324AB27932AA2FBF2B7EA72250886FF164DE6" IconIndex="0">
+          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" PublishedHash="2FBEA4FC39A07F52017F8FB9752E72DE834B30D1" />
         </Host>
       </FlavorProperties>
     </VisualStudio>
