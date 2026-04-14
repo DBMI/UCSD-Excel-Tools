@@ -21,28 +21,28 @@
     <ProjectTypeGuids>{BAA0C2D2-18E2-41B9-852F-F413020CAA33};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FD2E68C9-9D42-4DAC-983E-DD06A7852159}</ProjectGuid>
+    <ProjectGuid>{0EE34A41-5A85-4C7E-B9B7-A605B26C6B16}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <RootNamespace>MergeTools</RootNamespace>
-    <AssemblyName>MergeTools</AssemblyName>
+    <RootNamespace>NotesTools</RootNamespace>
+    <AssemblyName>NotesTools</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DefineConstants>VSTO40</DefineConstants>
     <ResolveComReferenceSilent>true</ResolveComReferenceSilent>
-    <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <PublishUrl>publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.1</ApplicationVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
-    <ProductName>MergeTools</ProductName>
+    <IsWebBootstrapper>False</IsWebBootstrapper>
+    <ProductName>NotesTools</ProductName>
     <PublisherName />
     <SupportUrl />
-    <FriendlyName>MergeTools</FriendlyName>
+    <FriendlyName>NotesTools</FriendlyName>
     <OfficeApplicationDescription />
     <LoadBehavior>3</LoadBehavior>
   </PropertyGroup>
@@ -126,12 +126,6 @@
     <Reference Include="Accessibility" />
     <Reference Include="log4net, Version=3.3.0.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.3.3.0\lib\net462\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="SimMetrics, Version=1.1.4118.23231, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimMetrics.1.1.4118.23231\lib\SimMetrics.dll</HintPath>
-    </Reference>
-    <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -224,26 +218,34 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ChooseCategoryForm.Designer.cs" />
-    <Compile Include="ColumnNamePair.cs" />
-    <Compile Include="DateRange.cs" />
-    <Compile Include="DateRangeColumns.cs" />
-    <Compile Include="FileMerger.cs" />
-    <Compile Include="MatchTextForm.cs">
+    <Compile Include="CleaningRuleGui.cs" />
+    <Compile Include="DateConverter.cs" />
+    <Compile Include="DefineRulesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MatchTextForm.Designer.cs" />
-    <Compile Include="MergeRowsForm.cs">
+    <Compile Include="DefineRulesForm.Designer.cs" />
+    <Compile Include="ExtractRuleGui.cs" />
+    <Compile Include="MergeNotesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MergeRowsForm.Designer.cs" />
-    <Compile Include="MergeToolsRibbon.cs" />
+    <Compile Include="MergeNotesForm.Designer.cs" />
+    <Compile Include="MessageDirectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageDirectionForm.Designer.cs" />
+    <Compile Include="MessageUnpeeler.cs" />
+    <Compile Include="NotesConfig.cs" />
+    <Compile Include="NotesParser.cs" />
+    <Compile Include="NotesToolsRibbon.cs" />
+    <Compile Include="ProcessingRowsSelection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities.cs" />
     <EmbeddedResource Include="ChooseCategoryForm.resx" />
-    <EmbeddedResource Include="MatchTextForm.resx" />
-    <EmbeddedResource Include="MergeRowsForm.resx" />
+    <EmbeddedResource Include="DefineRulesForm.resx" />
+    <EmbeddedResource Include="MergeNotesForm.resx" />
+    <EmbeddedResource Include="MessageDirectionForm.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -254,7 +256,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="MergeTools_TemporaryKey.pfx" />
+    <EmbeddedResource Include="RulesErrorForm.resx" />
+    <EmbeddedResource Include="StatusForm.resx" />
+    <None Include="NotesTools_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -264,12 +268,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SafeNamer.cs" />
-    <Compile Include="TextExtractor.cs" />
-    <Compile Include="TextMatcher.cs" />
+    <Compile Include="RuleGui.cs" />
+    <Compile Include="RulesErrorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RulesErrorForm.Designer.cs" />
+    <Compile Include="RuleValidation.cs" />
+    <Compile Include="StatusForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatusForm.Designer.cs" />
+    <Compile Include="StopWatchUtils.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="README.md" />
     <None Include="ThisAddIn.Designer.xml">
       <DependentUpon>ThisAddIn.cs</DependentUpon>
     </None>
@@ -279,24 +292,22 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MergeToolsRibbon.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="pictures\combine_rows.png">
+    <EmbeddedResource Include="NotesToolsRibbon.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="pictures\help_small.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\match_pieces.png">
+    <EmbeddedResource Include="pictures\merge_rows.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\merge_files.png">
+    <EmbeddedResource Include="pictures\nesting_dolls.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\uncorker.png">
+    <EmbeddedResource Include="pictures\regex_search_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pictures\regex_setup_icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -309,10 +320,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>MergeTools_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>NotesTools_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>14222BBC647F6AD32CD946D10BF210F7AC5AAD39</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>3890D595123A42ACEB2B7BC93DE6937809BD0987</ManifestCertificateThumbprint>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->
@@ -322,8 +333,8 @@
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="Excel" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Excel" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\16.0\Excel\InstallRoot\Path#excel.exe" DebugInfoCommandLine="/x" AddItemTemplatesGuid="{51063C3A-E220-4D12-8922-BDA915ACD783}" />
-        <Host Name="Excel" GeneratedCodeNamespace="MergeTools" PublishedHash="69C324AB27932AA2FBF2B7EA72250886FF164DE6" IconIndex="0">
-          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" PublishedHash="5C8145A3079B065E525800C0CC554F4888D94500" />
+        <Host Name="Excel" GeneratedCodeNamespace="NotesTools" IconIndex="0">
+          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" />
         </Host>
       </FlavorProperties>
     </VisualStudio>
