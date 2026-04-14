@@ -1,0 +1,107 @@
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Web.Script.Serialization;
+using System.Windows.Forms;
+using C = SpatialTools.Census;
+using log4net;
+
+namespace SpatialTools
+{
+    /**
+     * @brief Connects to US Census Bureau's online geocoding service, queries for census info & parses the output.
+     */
+    internal class Geocode
+    {
+        private const string URL = @"https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=";
+        // Even if we want Census year 2010, still need to use the 2020 benchmark.
+        private const string SUFFIX_BENCHMARK = @"&benchmark=2020";
+        private const string SUFFIX_VINTAGE = @"&vintage=";
+        private const string SUFFIX_FORMAT = @"&format=json";
+        private string suffix;
+        private string year = string.Empty;
+
+
+        // https://stackoverflow.com/a/28546547/18749636
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(
+            System.Reflection.MethodBase.GetCurrentMethod().DeclaringType
+        );
+
+        internal Geocode()
+        {
+            BuildQuerySuffix();
+        }
+
+        private string AskCensusYear()
+        {
+            using (ChooseAOrBForm form = new ChooseAOrBForm("Choose Census data year.", "2010", "2020"))
+            {
+                var result = form.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    year = form.choice;
+                }
+            }
+
+            return year;
+        }
+
+        private void BuildQuerySuffix()
+        {
+            string year = AskCensusYear();
+
+            if (!string.IsNullOrEmpty(year))
+            {
+                suffix = SUFFIX_BENCHMARK + SUFFIX_VINTAGE + year + SUFFIX_FORMAT;
+            }
+        }
+
+        /// <summary>
+        /// Sends HTTP query containing address & converts response to a @c CensusData object.
+        /// </summary>
+        /// <param name="address">Address to query</param>
+
+        internal C.CensusData Convert(string address)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            C.CensusData data = new C.CensusData();
+
+            string addressEncoded = Uri.EscapeDataString(address.Replace(", ", ","));
+            string url = URL + addressEncoded + suffix;
+
+            HttpClient httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMinutes(5);
+
+            // Call asynchronous network methods in a try/catch block to handle exceptions.
+            try
+            {
+                httpClient.BaseAddress = new Uri(url);
+
+                using (HttpResponseMessage response = httpClient.GetAsync(url).Result)
+                {
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = response.Content.ReadAsStringAsync().Result;
+
+                    // Convert "Census Tracts" to "CensusTracts" (without space) for parsing into CensusData class.
+                    responseBody = responseBody.Replace("Census Tracts", "CensusTracts");
+
+                    var serializer = new JavaScriptSerializer();
+                    serializer.MaxJsonLength = int.MaxValue;
+                    data = serializer.Deserialize<C.CensusData>(responseBody);
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                log.Error(e.Message);
+            }
+
+            return data;
+        }
+
+        internal string WhatYear()
+        {
+            return year;
+        }
+    }
+}

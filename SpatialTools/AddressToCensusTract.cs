@@ -1,0 +1,168 @@
+﻿using Microsoft.Office.Interop.Excel;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text.RegularExpressions;
+using C = SpatialTools.Census;
+using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
+
+namespace SpatialTools
+{    /**
+     * @brief Are we using full address or just the zip code?
+     */
+    internal enum LocationSource
+    {
+        [Description("Address")]
+        Address = 1,
+        [Description("Zip")]
+        Zip = 2,
+        [Description("Unknown")]
+        Unknown = 0,
+    }
+
+    internal class AddressToCensusTract
+    {
+        private Application application;
+        private const int HALFWAY_DOWN_THE_SHEET = 12;
+        private const int PAUSE_AFTER_THIS_MANY = 1000;
+        private const int PAUSE_MSEC = 60000;
+        private const string apartmentNumberPattern = @"\s*(Apt|Unit)\s*[\d\w]+,";
+
+        // https://stackoverflow.com/a/28546547/18749636
+        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger(
+        //    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType
+        //);
+
+        internal AddressToCensusTract()
+        {
+            application = Globals.ThisAddIn.Application;
+        }
+
+        internal void Convert(Worksheet worksheet)
+        {
+            // 1) Find the address column.
+            Range locationColumn = FindNamedColumn(worksheet, "address");
+            LocationSource locationSource = LocationSource.Unknown;
+            Geocode geocoder = null;
+
+            if (locationColumn == null)
+            {
+                Utilities.WarnColumnNotFound("address");
+                return;
+            }
+            else
+            {
+                locationSource = LocationSource.Address;
+                application.StatusBar = "Creating census Geocoder object.";
+                geocoder = new Geocode();
+            }
+
+            Range censusColumn = null;
+
+            if (locationSource == LocationSource.Address)
+            {
+                string columName = "Census FIPS (" + geocoder.WhatYear() + ")";
+                censusColumn = Utilities.InsertNewColumn(range: locationColumn, newColumnName: columName, side: InsertSide.Right);
+            }
+
+            int rowOffset = 1;
+            int numConsecutiveFailures = 0;
+
+            // 2) Convert each address to census tract FIPS number.
+            while (true)
+            {
+                try
+                {
+                    string location = locationColumn.Offset[rowOffset, 0].Text;
+
+                    if (string.IsNullOrEmpty(location))
+                    {
+                        numConsecutiveFailures++;
+                    }
+                    else
+                    {
+                        if (locationSource == LocationSource.Address)
+                        {
+                            location = Regex.Replace(location, apartmentNumberPattern, "");
+                            C.CensusData data = geocoder.Convert(location);
+                            ulong fips = data.FIPS();
+                            censusColumn.Offset[rowOffset, 0].Value2 = fips;
+
+                            // reset
+                            numConsecutiveFailures = 0;
+                        }
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    numConsecutiveFailures++;
+                }
+
+                // An occasional miss is ok, but three in a row & we've run outta data.
+                if (numConsecutiveFailures >= 3)
+                {
+                    break;
+                }
+
+                rowOffset++;
+                Utilities.ScrollToRow(worksheet, censusColumn.Offset[rowOffset].Row - HALFWAY_DOWN_THE_SHEET);
+
+                if (rowOffset % 10 == 0)
+                {
+                    application.StatusBar = "Processed " + rowOffset.ToString() + " addresses.";
+                }
+
+                if (rowOffset % PAUSE_AFTER_THIS_MANY == 0)
+                {
+                    application.StatusBar = "Pausing...";
+                    System.Threading.Thread.Sleep(PAUSE_MSEC);
+                }
+            }
+
+            application.StatusBar = "Complete";
+        }
+
+        /// <summary>
+        /// Finds either the user-selected column or (if none selected) column with name we expect.
+        /// <summary>
+        /// <param name="worksheet">Reference to the ActiveSheet.</param>
+        /// <param name="desiredName">Name of column we're looking for.</param>
+        /// <returns>Range</returns>
+        private Range FindNamedColumn(Worksheet worksheet, string desiredName)
+        {
+            Regex desiredPattern = new Regex(desiredName.ToLower());
+            Range selectedColumn = Utilities.GetSelectedCol(application);
+
+            // If user didn't select a column, find it by name.
+            if (selectedColumn == null)
+            {
+                Dictionary<string, Range> columns = Utilities.GetColumnRangeDictionary(worksheet);
+
+                foreach (KeyValuePair<string, Range> column in columns)
+                {
+                    Match match = desiredPattern.Match(column.Key.ToLower());
+
+                    if (match.Success)
+                    {
+                        selectedColumn = column.Value;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // What's the heading of this column say?
+                string header = selectedColumn.Value2;
+                Match match = desiredPattern.Match(header.ToLower());
+
+                if (!match.Success)
+                {
+                    return null;
+                }
+            }
+
+            return selectedColumn;
+        }
+    }
+}

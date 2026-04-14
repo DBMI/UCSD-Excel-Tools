@@ -3,5 +3,7 @@
   <Project Path="FormatTools/FormatTools.csproj" Id="8863eef3-11c6-45aa-8fb6-b4d306be08e8" />
   <Project Path="ListTools/ListTools.csproj" Id="fdb62cd4-1f1b-4591-8693-ec9f33072494" />
   <Project Path="MergeTools/MergeTools.csproj" Id="fd2e68c9-9d42-4dac-983e-dd06a7852159" />
+  <Project Path="NotesTools/NotesTools.csproj" Id="0ee34a41-5a85-4c7e-b9b7-a605b26c6b16" />
+  <Project Path="SpatialTools/SpatialTools.csproj" Id="f7071737-d852-4054-ac73-a3638fa25502" />
   <Project Path="TimecardTools/TimecardTools.csproj" Id="d6165423-eab9-4e16-9817-724fb199f15b" />
 </Solution>
