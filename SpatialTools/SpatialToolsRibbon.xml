@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label="Spatial Tools">
+		<group id ="SpatialDataGroup"
+				label="Spatial Data">
+			<button id="address"
+					getImage="addressButton_GetImage"
+					label="Address to Census Tract"
+					onAction="OnConvertAddress"
+					screentip="Looks up Social Vulnerability Index"
+					size="large"
+					supertip="Gets Census Tract from address, then looks up SVI from .csv file" />
+			<button id="HPI"
+					getImage="hpiButton_GetImage"
+					label="Add HPI"
+					onAction="OnAddHPI"
+					screentip="Looks up Healthy Places Index"
+					size="large"
+					supertip="Looks up Healthy Places Index based on Census tract" />
+			<button id="SVI"
+					getImage="sviButton_GetImage"
+					label="Add SVI"
+					onAction="OnAddSVI"
+					screentip="Looks up Social Vulnerability Index"
+					size="large"
+					supertip="Looks up Social Vulnerability Index based on Census tract" />
+		</group>
+	  </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
