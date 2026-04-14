@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label = "List Tools">
+        <group id="ListGroup"
+               label="Lists">
+			<button id="buildListButton"
+					getImage="buildListButton_GetImage"
+					label="Import List"
+					onAction="OnBuildList"
+					screentip="Build list import code"
+					size="large"
+					supertip="Build SQL code to import a list" />
+			<button id="signalImportButton"
+					getImage="signalImportButton_GetImage"
+					label="Import Signal Data"
+					onAction="OnSignalImport"
+					size="large"
+					screentip="Import Signal data from JSON file"/>
+			<button id="chopIntoTabsButton"
+					getImage="chopIntoTabsButton_GetImage"
+					label="Separate Tabs"
+					onAction="OnChopList"
+					screentip="Break up into separate tabs"
+					size="large"
+					supertip="Break up long list into separate tabs by category" />
+			<button id="matchPhysiciansButton"
+					getImage="matchPhysiciansButton_GetImage"
+					label="Match Physicians"
+					onAction="OnMatchPhysicians"
+					screentip="Assign record # to physicians"
+					size="large"
+					supertip="Apply record numbers assigned in one sheet to another sheet" />
+			<button id="lookupNpiButton"
+					getImage="lookupNpiButton_GetImage"
+					label="Lookup NPI"
+					onAction="OnLookupNpi"
+					screentip="Lookup NPI"
+					size="large"
+					supertip="Lookup National Provider Identifier" />
+			<button id="onCallListButton"
+					getImage="onCallListButton_GetImage"
+					label="On-Call List"
+					onAction="OnProcessCallList"
+					screentip="Extract on-call list"
+					size="large"
+					supertip="Turn physician on-call list into SQL-friendly version" />
+			<button id="searchByEmailButton"
+					getImage="searchByEmailButton_GetImage"
+					label="Search by Email"
+					onAction="OnSearchByEmail"
+					screentip="Search Providers by Email"
+					size="large"
+					supertip="Search Providers by Email" />
+			<button id="sortTimesButton"
+					getImage="sortTimesButton_GetImage"
+					label="Sort Follow-up Times"
+					onAction="OnSortTimes"
+					size="large"
+					screentip="Sort Times into High, Medium and Routine Priorities"/>
+			<button id="sortTimesSettingsButton"
+					getImage="sortTimesSettingsButton_GetImage"
+					label="Choose Thresholds"
+					onAction="OnSortTimesSettings"
+					size="large"
+					screentip="Choose Thresholds for Follow-up Times"/>
+			<button id="histogramButton"
+					getImage="histogramButton_GetImage"
+					label="Histogram"
+					onAction="OnHistogram"
+					size="large"
+					screentip="Build Histogram"/>
+		</group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
