@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label="Deidentify Tools">
+			<group id="GrouchoGroup"
+					label="Deidentify">
+				<button id="scramble"
+						getImage="scramblerButton_GetImage"
+						label="Scrambler"
+						onAction="OnScramble"
+						screentip="Scramble"
+						size="large"
+						supertip="Generate hash from selected column" />
+				<button id="hideDateTime"
+						getImage="hideDateTimeButton_GetImage"
+						label="Obscure Date/Time"
+						onAction="OnObscureDateTime"
+						screentip="Obscure Date and Time"
+						size="large"
+						supertip="Adds random offset to dates, times" />
+				<button id="hideNames"
+						getImage="hideNamesButton_GetImage"
+						label="Hide Names"
+						onAction="OnHideNames"
+						screentip="Hide Names"
+						size="large"
+						supertip="Convert names to scrambled ID" />
+				<button id="bogus"
+						getImage="bogusButton_GetImage"
+						label="Generate Fakes"
+						onAction="OnBogus"
+						screentip="Generate fake people"
+						size="large"
+						supertip="Generate fake people for testing" />
+			</group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
