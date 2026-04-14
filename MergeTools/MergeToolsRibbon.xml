@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label="Merge Tools">
+		<group id ="MergeGroup"
+				label="Merge">
+			<button id="extractTextButton"
+					getImage="extractTextButton_GetImage"
+					label="Extract Text"
+					onAction="OnExtractText"
+					screentip="Extract text"
+					size="large"
+					supertip="Extract text from REDCap HTML" />
+			<button id="matchTextButton"
+					getImage="matchTextButton_GetImage"
+					label="Match Text"
+					onAction="OnMatchText"
+					screentip="Match text"
+					size="large"
+					supertip="Match text" />
+			<button id="mergeRowButton"
+					getImage="mergeRowsButton_GetImage"
+					label="Merge Rows"
+					onAction="OnMergeRows"
+					screentip="Merge rows"
+					size="large"
+					supertip="Merge results" />
+			<button id="mergeFilesButton"
+					getImage="mergeFilesButton_GetImage"
+					label="Merge Files"
+					onAction="OnMergeFiles"
+					screentip="Merge files"
+					size="large"
+					supertip="Merge .csv files" />
+		</group>
+	  </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+

@@ -21,28 +21,28 @@
     <ProjectTypeGuids>{BAA0C2D2-18E2-41B9-852F-F413020CAA33};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8863EEF3-11C6-45AA-8FB6-B4D306BE08E8}</ProjectGuid>
+    <ProjectGuid>{FD2E68C9-9D42-4DAC-983E-DD06A7852159}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <RootNamespace>FormatTools</RootNamespace>
-    <AssemblyName>FormatTools</AssemblyName>
+    <RootNamespace>MergeTools</RootNamespace>
+    <AssemblyName>MergeTools</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DefineConstants>VSTO40</DefineConstants>
     <ResolveComReferenceSilent>true</ResolveComReferenceSilent>
-    <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <PublishUrl>publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.1</ApplicationVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
-    <ProductName>FormatTools</ProductName>
+    <IsWebBootstrapper>False</IsWebBootstrapper>
+    <ProductName>MergeTools</ProductName>
     <PublisherName />
     <SupportUrl />
-    <FriendlyName>FormatTools</FriendlyName>
+    <FriendlyName>MergeTools</FriendlyName>
     <OfficeApplicationDescription />
     <LoadBehavior>3</LoadBehavior>
   </PropertyGroup>
@@ -127,14 +127,18 @@
     <Reference Include="log4net, Version=3.3.0.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.3.3.0\lib\net462\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="SimMetrics, Version=1.1.4118.23231, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimMetrics.1.1.4118.23231\lib\SimMetrics.dll</HintPath>
+    </Reference>
+    <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -216,21 +220,30 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Block.cs" />
     <Compile Include="ChooseCategoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ChooseCategoryForm.Designer.cs" />
-    <Compile Include="DateConverter.cs" />
-    <Compile Include="Formatter.cs" />
-    <Compile Include="FormatToolsRibbon.cs" />
-    <Compile Include="MumpsDateConverter.cs" />
+    <Compile Include="ColumnNamePair.cs" />
+    <Compile Include="DateRange.cs" />
+    <Compile Include="DateRangeColumns.cs" />
+    <Compile Include="FileMerger.cs" />
+    <Compile Include="MatchTextForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MatchTextForm.Designer.cs" />
+    <Compile Include="MergeRowsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MergeRowsForm.Designer.cs" />
+    <Compile Include="MergeToolsRibbon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities.cs" />
-    <Compile Include="WordCounter.cs" />
     <EmbeddedResource Include="ChooseCategoryForm.resx" />
+    <EmbeddedResource Include="MatchTextForm.resx" />
+    <EmbeddedResource Include="MergeRowsForm.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -241,7 +254,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="FormatTools_TemporaryKey.pfx" />
+    <None Include="MergeTools_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -251,13 +264,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RuleValidation.cs" />
     <Compile Include="SafeNamer.cs" />
-    <Compile Include="Striper.cs" />
+    <Compile Include="TextExtractor.cs" />
+    <Compile Include="TextMatcher.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="README.md" />
     <None Include="ThisAddIn.Designer.xml">
       <DependentUpon>ThisAddIn.cs</DependentUpon>
     </None>
@@ -267,31 +279,26 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FormatToolsRibbon.xml">
+    <EmbeddedResource Include="MergeToolsRibbon.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pictures\abacus.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="pictures\calendar with gear.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="pictures\calendar.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="pictures\copy_formatting.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="pictures\paint roller.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="pictures\spreadsheet.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="school_of_medicine.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="test files\" />
+    <EmbeddedResource Include="pictures\combine_rows.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pictures\help_small.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pictures\match_pieces.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pictures\merge_files.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pictures\uncorker.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -302,10 +309,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FormatTools_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>MergeTools_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>C2BA1EEB078DC007E07A4D3789CDC9AF318C9833</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>14222BBC647F6AD32CD946D10BF210F7AC5AAD39</ManifestCertificateThumbprint>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->
@@ -315,8 +322,8 @@
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="Excel" HostPackage="{29A7B9D7-A7F1-4328-8EF0-6B2D1A56B2C1}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="Excel" Language="cs" TemplatesPath="" DebugInfoExeName="#Software\Microsoft\Office\16.0\Excel\InstallRoot\Path#excel.exe" DebugInfoCommandLine="/x" AddItemTemplatesGuid="{51063C3A-E220-4D12-8922-BDA915ACD783}" />
-        <Host Name="Excel" GeneratedCodeNamespace="FormatTools" PublishedHash="69C324AB27932AA2FBF2B7EA72250886FF164DE6" IconIndex="0">
-          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" PublishedHash="CFA5D2A731387036F9EBEB1F4D1D89AD1816BB34" />
+        <Host Name="Excel" GeneratedCodeNamespace="MergeTools" IconIndex="0">
+          <HostItem Name="ThisAddIn" Code="ThisAddIn.cs" CanonicalName="AddIn" CanActivate="false" IconIndex="1" Blueprint="ThisAddIn.Designer.xml" GeneratedCode="ThisAddIn.Designer.cs" />
         </Host>
       </FlavorProperties>
     </VisualStudio>

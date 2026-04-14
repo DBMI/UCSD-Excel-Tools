@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DeidentifyTools/DeidentifyTools.csproj" Id="0a5b7788-b80b-421b-95c5-ae17445c7896" />
+  <Project Path="FormatTools/FormatTools.csproj" Id="8863eef3-11c6-45aa-8fb6-b4d306be08e8" />
+  <Project Path="ListTools/ListTools.csproj" Id="fdb62cd4-1f1b-4591-8693-ec9f33072494" />
+  <Project Path="MergeTools/MergeTools.csproj" Id="fd2e68c9-9d42-4dac-983e-dd06a7852159" />
+  <Project Path="TimecardTools/TimecardTools.csproj" Id="d6165423-eab9-4e16-9817-724fb199f15b" />
+</Solution>
