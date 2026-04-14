@@ -1,4 +1,4 @@
-## Hide Dr. Names
+## Hide Names
 
 ![image info](./toolbar.png)
 
