@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label="Format Tools">
+        <group id="FormatGroup"
+               label="Format">
+			<button id="formatSheet"
+					getImage="formatButton_GetImage"
+					label="Format Results"
+					onAction="OnFormat"
+					screentip="Format current sheet"
+					size="large"
+					supertip="Nice formatting for results sheet" />
+			<button id="copyFormatting"
+					getImage="copyFormatButton_GetImage"
+					label="Copy Formatting"
+					onAction="OnCopyFormat"
+					screentip="Copy formatting from current sheet to next"
+					size="large"
+					supertip="Copy formatting from current sheet to all remaining sheets" />
+			<button id="convertDate"
+					getImage="dateConvertButton_GetImage"
+					label="Convert Dates"
+					onAction="OnConvertDates"
+					screentip="Convert MUMPS Dates"
+					size="large"
+					supertip="Adds new column with converted dates" />
+			<button id="convertDateToText"
+					getImage="dateToTextButton_GetImage"
+					label="Convert Dates to Text"
+					onAction="OnDatesToText"
+					screentip="Convert Dates to Text"
+					size="large"
+					supertip="Adds new column with text version of dates" />
+			<button id="stripe"
+					getImage="stripeButton_GetImage"
+					label="Stripe by Value"
+					onAction="OnStripe"
+					screentip="Stripe by data"
+					size="large"
+					supertip="Stripe worksheet by data value" />
+			<button id="count"
+					getImage="countWordsButton_GetImage"
+					label="Count Words/Char"
+					onAction="OnCountWords"
+					screentip="Count Words and Char"
+					size="large"
+					supertip="Count words and characters"/>
+		</group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
