@@ -61,6 +61,26 @@ namespace SpatialTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] California_2020 {
+            get {
+                object obj = ResourceManager.GetObject("California_2020", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] California_2022 {
+            get {
+                object obj = ResourceManager.GetObject("California_2022", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap census {
@@ -87,6 +107,46 @@ namespace SpatialTools.Properties {
             get {
                 object obj = ResourceManager.GetObject("hpi", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] hpi_2010 {
+            get {
+                object obj = ResourceManager.GetObject("hpi_2010", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] hpi_3 {
+            get {
+                object obj = ResourceManager.GetObject("hpi_3", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] SVI_2020_US {
+            get {
+                object obj = ResourceManager.GetObject("SVI_2020_US", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] SVI_2022_US {
+            get {
+                object obj = ResourceManager.GetObject("SVI_2022_US", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }
