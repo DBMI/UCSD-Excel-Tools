@@ -209,6 +209,10 @@ namespace SpatialTools
                     filePattern = "hpi_2010.csv";
                     break;
 
+                case "2020":
+                    filePattern = "hpi_3.csv";
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(year, "Expected 2010.");
             }
