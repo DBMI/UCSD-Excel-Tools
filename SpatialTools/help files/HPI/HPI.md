@@ -1,4 +1,4 @@
-## Lookup Social Vulnerability Index (SVI)
+## Lookup Healthy Places Index (HPI)
 
 ![image info](./toolbar.png)
 

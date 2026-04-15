@@ -1,4 +1,4 @@
-## Extract Text
+## Extract Message
 
 ![image info](./toolbar.png)
 
@@ -8,7 +8,7 @@ Starting with the HTML-wrapped messages:
 
 ![image info](./html_messages.png)
 
-...pressing the `Extract Text` button parses the HTML and creates two new columns for the patient message and their provider's reply:
+...pressing the `Extract Message` button parses the HTML and creates two new columns for the patient message and their provider's reply:
 
 ![image info](./results.png)
 
