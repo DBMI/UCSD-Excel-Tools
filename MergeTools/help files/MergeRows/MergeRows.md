@@ -20,21 +20,21 @@ Selecting the `Merge Rows` button:
 
 
 <figure>
-<img src="toolbar.png" style="width:6.14in;height:0.7in" />
+<img src="toolbar.png" style="width:1.5in;height:0.7in" />
 <figcaption><p>Figure 2. Selecting the <code>Merge Rows</code> button</p></figcaption>
 </figure>
 
 ...brings up the `MergeRows` form:
 
 <figure>
-<img src="form.png" style="width:6.14in;height:3.0in" />
+<img src="form.png" style="width:6.14in;height:2.5in" />
 <figcaption><p>Figure 3. <code>Merge Rows</code> form</p></figcaption>
 </figure>
 
 Here we select the `ID` column as the one which identifies the patient, the `StartDate`, `EndDate` columns as the Date columns and the rest as `Info` columns.
 
 <figure>
-<img src="merged_excel_file.png" style="width:6.14in;height:3.0in" />
+<img src="merged_excel_file.png" style="width:6.14in;height:2.5in" />
 <figcaption><p>Figure 4. Resulting merged rows</p></figcaption>
 </figure>
 
