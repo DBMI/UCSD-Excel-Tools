@@ -13,6 +13,8 @@ Add-Ins for Excel that automate repetitive or tedious tasks.
 
 [Notes Tools](NotesTools/README.md)
 
+[Plot Tools](PlotTools/README.md)
+
 [Spatial Tools](SpatialTools/README.md)
 
 [Timecard Tools](TimecardTools/README.md)
