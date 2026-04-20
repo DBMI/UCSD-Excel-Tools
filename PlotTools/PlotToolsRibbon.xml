@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab id="TabAddIns" label="Plot Tools">
+        <group id="PlotGroup"
+               label="Plot">
+			<button id="onePlot"
+					getImage="onePlotButton_GetImage"
+					label="Plot This Sheet"
+					onAction="OnPlotThisSheet"
+					screentip="Plot selected X, Y data."
+					size="large"
+					supertip="Plot selected X, Y data." />
+			<button id="multiPlot"
+					getImage="multiPlotButton_GetImage"
+					label="Plot All Sheets"
+					onAction="OnPlotAllSheets"
+					screentip="Plot selected X, Y data on every sheet."
+					size="large"
+					supertip="Plot selected X, Y data on every sheet." />
+		</group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
