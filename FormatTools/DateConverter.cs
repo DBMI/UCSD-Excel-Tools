@@ -145,7 +145,7 @@ namespace FormatTools
                                                              side: InsertSide.Right);
             newColumn.NumberFormat = "@";
 
-            DateTime sourceData;
+            Range source;
             Range target;
             Worksheet worksheet = selectedColumnRng.Worksheet;
             int rowNumber = 1;
@@ -158,8 +158,9 @@ namespace FormatTools
 
                 try
                 {
-                    sourceData = worksheet.Cells[rowNumber, selectedColumnRng.Column].Value;
-                    target.Value = sourceData.ToString("yyyy-MM-dd HH:mm:ss");
+                    source = worksheet.Cells[rowNumber, selectedColumnRng.Column];
+                    DateTime sourceValue = source.Value;
+                    target.Formula = "=TEXT(" + source.Address + ", \"YYYY-MM-DD\")";
 
                     // reset
                     numConsecutiveFailures = 0;
