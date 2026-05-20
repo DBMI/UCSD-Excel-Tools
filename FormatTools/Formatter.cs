@@ -332,7 +332,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Sets header text tp BP:D/
+        /// Sets header text to BOLD/
         /// </summary>
         /// <param name="worksheet">The active worksheet</param>
 
