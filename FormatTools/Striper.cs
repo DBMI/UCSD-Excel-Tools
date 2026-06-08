@@ -1,6 +1,8 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
+
 
 namespace FormatTools
 {
@@ -13,7 +15,7 @@ namespace FormatTools
         private Range selectedColumnRng;
         private Dictionary<string, Block> sourceBlocks;
         private Worksheet thisWorksheet;
-        private XlRgbColor gray = XlRgbColor.rgbLightGray;
+        private XlRgbColor powderBlue = XlRgbColor.rgbLightSkyBlue;
 
         internal Striper()
         {
@@ -80,7 +82,7 @@ namespace FormatTools
                     {
                         // Find the Block of rows in the sheet corresponding to this value.
                         Block thisBlock = sourceBlocks[blockName];
-                        thisBlock.shade(thisWorksheet, gray);
+                        thisBlock.shade(thisWorksheet, powderBlue);
                     }
 
                     blockIndex++;
