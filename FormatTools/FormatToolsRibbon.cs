@@ -107,7 +107,6 @@ namespace FormatTools
         {
             return Resources.spreadsheet;
         }
-
         /////////////////////////////////
         ///                           ///
         ///         ACTIONS           ///
