@@ -1,6 +1,9 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Workbook = Microsoft.Office.Interop.Excel.Workbook;
 using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
@@ -341,6 +344,62 @@ namespace FormatTools
         {
             Range topRow = worksheet.Cells[1, 1].EntireRow;
             topRow.Font.Bold = true;
+        }
+
+        /// <summary>
+        /// Formats selected rows/columns as a Markdown table.
+        /// </summary>
+        /// <param name="worksheet">The active worksheet</param>
+
+        internal void Markdown(Worksheet worksheet)
+        {
+            // Get the current user selection
+            Range selectedRange = Globals.ThisAddIn.Application.Selection as Range;
+
+            if (selectedRange != null)
+            {
+                int totalSelectedRows = selectedRange.Rows.Count;
+                int totalSelectedColumns = selectedRange.Columns.Count;
+
+                string markdownTable = "";
+
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "Markdown file|*.md";
+                dialog.Title = "Save Markdown table.";
+                dialog.ShowDialog();
+
+                if (dialog.FileName != "")
+                {
+                    using (StreamWriter writer = new StreamWriter(dialog.FileName))
+                    {
+                        // Loop through each selected row.
+                        for (int rowIndex = 1; rowIndex <= totalSelectedRows; rowIndex++)
+                        {
+                            markdownTable = "| ";
+
+                            // Loop through each selected column.
+                            for (int colIndex = 1; colIndex <= totalSelectedColumns; colIndex++)
+                            {
+                                Range individualCell = (Range)selectedRange.Cells[rowIndex, colIndex];
+                                markdownTable += " " + individualCell.Value2 + " |";
+                            }
+
+                            writer.WriteLine(markdownTable);
+
+                            // Special handling of first (header) row.
+                            if (rowIndex == 1)
+                            {
+                                string centered = " :---: |";
+                                string repeated = string.Concat(Enumerable.Repeat(centered, totalSelectedColumns));
+                                markdownTable = "|" + repeated;
+                                writer.WriteLine(markdownTable);
+                            }
+                        }
+                    }
+
+                    Utilities.OpenFile(dialog.FileName);
+                }
+            }
         }
 
         /// <summary>

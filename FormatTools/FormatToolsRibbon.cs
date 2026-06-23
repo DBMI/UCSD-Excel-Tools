@@ -89,6 +89,16 @@ namespace FormatTools
         }
 
         /// <summary>
+        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c FormatAsMarkdown button.
+        /// </summary>
+        /// <param name="control">Reference to the IRibbonControl object.</param>
+        /// <returns>Bitmap</returns>
+        public Bitmap formatAsMarkdown_GetImage(IRibbonControl control)
+        {
+            return Resources.markdown;
+        }
+
+        /// <summary>
         /// Lets the @c DecsExcelRibbon.xml point to the image for the @c FormatResults button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
@@ -171,6 +181,18 @@ namespace FormatTools
             Formatter formatter = new Formatter();
             Excel.Worksheet wksheet = (Excel.Worksheet)Globals.ThisAddIn.Application.ActiveSheet;
             formatter.Format(wksheet);
+        }
+
+        /// <summary>
+        /// When @c FormatAsMarkdown button is pressed, this method instantiates a @c Formatter object & calls its @c Markdown method.
+        /// </summary>
+        /// <param name="control">Reference to the IRibbonControl object.</param>
+
+        public void OnFormatAsMarkdown(IRibbonControl control)
+        {
+            Formatter formatter = new Formatter();
+            Excel.Worksheet wksheet = (Excel.Worksheet)Globals.ThisAddIn.Application.ActiveSheet;
+            formatter.Markdown(wksheet);
         }
 
         /// <summary>

@@ -33,6 +33,13 @@
 					screentip="Convert Dates to Text"
 					size="large"
 					supertip="Adds new column with text version of dates" />
+			<button id="formatAsMarkdownTable"
+					getImage="formatAsMarkdown_GetImage"
+					label="Format as Markdown Table"
+					onAction="OnFormatAsMarkdown"
+					screentip="Format as Markdown Table"
+					size="large"
+					supertip="Format selected rows/columns as Markdown table"/>
 			<button id="stripe"
 					getImage="stripeButton_GetImage"
 					label="Stripe by Value"

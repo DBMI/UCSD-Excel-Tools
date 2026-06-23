@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Excel = Microsoft.Office.Interop.Excel;
 using TextBox = System.Windows.Forms.TextBox;
 using ToolTip = System.Windows.Forms.ToolTip;
@@ -1415,6 +1417,28 @@ namespace FormatTools
             }
 
             return xlWorkbook;
+        }
+
+        /// <summary>Open file in default app</summary>
+        /// <param name="filename">file to open</param>
+        internal static void OpenFile(string filename)
+        {
+            try
+            {
+                // Configure process to use the operating system shell
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = filename,
+                    UseShellExecute = true // Crucial for modern .NET
+                };
+
+                // Launch the default application
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not open file: {ex.Message}");
+            }
         }
 
         /// <summary>
