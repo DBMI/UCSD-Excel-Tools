@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Tools.Excel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,11 +9,13 @@ using System.Text.Json.Serialization;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Application = Microsoft.Office.Interop.Excel.Application;
+using Workbook = Microsoft.Office.Interop.Excel.Workbook;
+using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
 
 
 namespace ListTools
 {
-    // Classes generated automatically by copying JSON data onto clipboard,
+    // Classes were generated automatically by copying JSON data onto clipboard,
     // then using Visual Studio tool: Edit/Paste Special/Paste JSON As classes.
     public class Rootobject
     {
@@ -141,6 +144,10 @@ namespace ListTools
         private Application application;
         private SignalNotesFormat format = SignalNotesFormat.OneBigSheet;
         private Dictionary<string, string> metricsToSheets;
+        private Workbook thisWorkbook;
+
+        // Keep track of the last row we used on each sheet.
+        private Dictionary<string, int> lastRowUsed;
 
         // Keep track of the sheet used for each physician AND what row we last used on that sheet.
         private Dictionary<string, PhysicianTable> tables;
@@ -149,11 +156,12 @@ namespace ListTools
         {
             tables = new Dictionary<string, PhysicianTable>();
             application = Globals.ThisAddIn.Application;
+            thisWorkbook = Globals.ThisAddIn.Application.ActiveWorkbook;
         }
 
-        private string AskUserForFile()
+        private List<string> AskUserForFiles()
         {
-            string jsonFile = string.Empty;
+            List<string> jsonFiles = new List<string>();
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -161,15 +169,16 @@ namespace ListTools
                 // the dialog will open in the last directory used.
                 openFileDialog.Filter = "JSON files (*.json)|*.json";
                 openFileDialog.RestoreDirectory = true;
+                openFileDialog.Multiselect = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     // Get the path of specified file.
-                    jsonFile = openFileDialog.FileName;
+                    jsonFiles = openFileDialog.FileNames.ToList();
                 }
             }
 
-            return jsonFile;
+            return jsonFiles;
         }
 
         private void BuildSheets(Rootobject obj)
@@ -258,27 +267,48 @@ namespace ListTools
 
         internal void Import()
         {
-            string jsonFile = AskUserForFile();
+            List<string> jsonFiles = AskUserForFiles();
+            bool firstFile = true;
+            List<string> selectedMetrics = new List<string>();
 
-            if (jsonFile != string.Empty)
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new CustomDateTimeConverter());
+
+            foreach (string jsonFile in jsonFiles)
             {
                 using (StreamReader r = new StreamReader(jsonFile))
                 {
                     application.StatusBar = "Reading " + jsonFile;
                     string json = r.ReadToEnd();
 
-                    var options = new JsonSerializerOptions();
-                    options.Converters.Add(new CustomDateTimeConverter());
                     Rootobject obj = JsonSerializer.Deserialize<Rootobject>(json, options);
 
                     // Do we use ALL the metrics or ask the user to select?
-                    List<string> selectedMetrics = SelectMetricsToUse(obj.MetricNames());
+                    if (firstFile)
+                    {
+                        selectedMetrics = SelectMetricsToUse(obj.MetricNames());
 
-                    // Get sheet names from (perhaps too long) metric names.
-                    // Build dictionaries to link metrics to sheets.
-                    SheetNamesFromMetrics(selectedMetrics);
+                        // Get sheet names from (perhaps too long) metric names.
+                        // Build dictionaries to link metrics to sheets.
+                        SheetNamesFromMetrics(selectedMetrics);
+
+                        InitializeLastRowDictionary();
+
+                        firstFile = false;
+                    }
+
                     BuildSheets(obj);
                 }
+            }
+        }
+
+        private void InitializeLastRowDictionary()
+        {
+            lastRowUsed = new Dictionary<string, int>();
+
+            foreach (string metricName in metricsToSheets.Keys.ToList())
+            {
+                lastRowUsed[metricName] = 0;
             }
         }
 
@@ -331,10 +361,25 @@ namespace ListTools
         {
             foreach (string metricName in metricsToSheets.Keys.ToList())
             {
-                Worksheet newSheet = Utilities.CreateNewNamedSheet(metricsToSheets[metricName]);
-                InitializeSheet(newSheet, metricName);
-                Range r = newSheet.Cells[1, 1];
-                int rowOffset = 1;
+                // What was the last row we used on this sheet?
+                int lastRow = lastRowUsed[metricName];
+
+                Worksheet thisSheet;
+
+                // Is this the first time we put data on this sheet?
+                if (lastRow == 0)
+                {
+                    thisSheet = Utilities.CreateNewNamedSheet(metricsToSheets[metricName]);
+                    InitializeSheet(thisSheet, metricName);
+                }
+                else
+                {
+                    // Access directly by passing the sheet name string
+                    thisSheet = (Worksheet)thisWorkbook.Worksheets[metricsToSheets[metricName]];
+                }
+
+                Range r = thisSheet.Cells[1, 1];
+                int rowOffset = lastRow + 1;
 
                 List<Datum> dataThisMetric = sortedData.Where(obj => obj.Metric == metricName).ToList();
 
@@ -359,6 +404,8 @@ namespace ListTools
 
                     rowOffset++;
                 }
+
+                lastRowUsed[metricName] = rowOffset - 1;
             }
         }
 
