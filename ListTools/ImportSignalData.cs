@@ -22,20 +22,24 @@ namespace ListTools
         public Userwebmetadata UserWebMetadata { get; set; }
         public Datum[] Data { get; set; }
 
-        public List<string> MetricNames()
+        public List<NamePlusId> Metrics()
         {
+            List<NamePlusId> metrics = new List<NamePlusId>();
             List<string> metricNames = new List<string>();
 
             foreach (Datum datum in Data)
             {
-                if (!metricNames.Contains(datum.Metric))
+                // What names have already been added?
+                metricNames = metrics.Select(metric => metric.Combo()).ToList();
+
+                if (!metricNames.Contains(datum.MetricPlusId().Combo()))
                 {
-                    metricNames.Add(datum.Metric);
+                    metrics.Add(datum.MetricPlusId());
                 }
             }
 
-            metricNames.Sort();
-            return metricNames;
+            // Sort by name.
+            return metrics.OrderBy(p => p.name).ToList(); ;
         }
     }
 
@@ -88,6 +92,32 @@ namespace ListTools
 
         [JsonPropertyName("Metric ID")]
         public int MetricID { get; set; }
+
+        // Combine name & ID into an object.
+        public NamePlusId MetricPlusId()
+        {
+            return new NamePlusId(Metric, MetricID);
+        }
+    }
+
+    // Holds both the NAME and ID of a metric.
+    // This lets us distinguish among metrics with the same name but different IDs.
+    public class NamePlusId
+    {
+        public string name;
+        public int id;
+
+        public NamePlusId(string name, int id)
+        {
+            this.name = name;
+            this.id = id;
+        }
+
+        // Show combined name like "Time in In Basket_101".
+        public string Combo()
+        {
+            return this.name + "_" + this.id.ToString();
+        }
     }
 
     internal class PhysicianTable
@@ -143,7 +173,7 @@ namespace ListTools
     {
         private Application application;
         private SignalNotesFormat format = SignalNotesFormat.OneBigSheet;
-        private Dictionary<string, string> metricsToSheets;
+        private Dictionary<NamePlusId, string> metricsToSheets;
         private Workbook thisWorkbook;
 
         // Keep track of the last row we used on each sheet.
@@ -269,7 +299,7 @@ namespace ListTools
         {
             List<string> jsonFiles = AskUserForFiles();
             bool firstFile = true;
-            List<string> selectedMetrics = new List<string>();
+            List<NamePlusId> selectedMetrics = new List<NamePlusId>();
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new CustomDateTimeConverter());
@@ -286,7 +316,8 @@ namespace ListTools
                     // Do we use ALL the metrics or ask the user to select?
                     if (firstFile)
                     {
-                        selectedMetrics = SelectMetricsToUse(obj.MetricNames());
+                        application.StatusBar = "Compiling list of metrics.";
+                        selectedMetrics = SelectMetricsToUse(obj.Metrics());
 
                         // Get sheet names from (perhaps too long) metric names.
                         // Build dictionaries to link metrics to sheets.
@@ -304,11 +335,12 @@ namespace ListTools
 
         private void InitializeLastRowDictionary()
         {
+            // Sheet name to last row.
             lastRowUsed = new Dictionary<string, int>();
 
-            foreach (string metricName in metricsToSheets.Keys.ToList())
+            foreach (NamePlusId metric in metricsToSheets.Keys.ToList())
             {
-                lastRowUsed[metricName] = 0;
+                lastRowUsed[metric.Combo()] = 0;
             }
         }
 
@@ -359,29 +391,31 @@ namespace ListTools
 
         private void PutAllPhysiciansOnSameSheet(List<Datum> sortedData)
         {
-            foreach (string metricName in metricsToSheets.Keys.ToList())
+            foreach (NamePlusId metric in metricsToSheets.Keys.ToList())
             {
                 // What was the last row we used on this sheet?
-                int lastRow = lastRowUsed[metricName];
+                int lastRow = lastRowUsed[metric.Combo()];
 
                 Worksheet thisSheet;
 
                 // Is this the first time we put data on this sheet?
                 if (lastRow == 0)
                 {
-                    thisSheet = Utilities.CreateNewNamedSheet(metricsToSheets[metricName]);
-                    InitializeSheet(thisSheet, metricName);
+                    thisSheet = Utilities.CreateNewNamedSheet(metricsToSheets[metric]);
+                    InitializeSheet(thisSheet, metric.Combo());
                 }
                 else
                 {
-                    // Access directly by passing the sheet name string
-                    thisSheet = (Worksheet)thisWorkbook.Worksheets[metricsToSheets[metricName]];
+                    // Lookup by name.
+                    thisSheet = (Worksheet)thisWorkbook.Worksheets[metricsToSheets[metric]];
                 }
 
                 Range r = thisSheet.Cells[1, 1];
                 int rowOffset = lastRow + 1;
+                int index = 0;
 
-                List<Datum> dataThisMetric = sortedData.Where(obj => obj.Metric == metricName).ToList();
+                // Find by metric ID, not just the name.
+                List<Datum> dataThisMetric = sortedData.Where(obj => obj.MetricID == metric.id).ToList();
 
                 foreach (Datum datum in dataThisMetric)
                 {
@@ -395,17 +429,18 @@ namespace ListTools
                     r.Offset[rowOffset, 7].Value2 = datum.Numerator;
                     r.Offset[rowOffset, 8].Value2 = datum.Denominator;
                     r.Offset[rowOffset, 9].Value2 = datum.Value;
+                    index++;
 
                     if (rowOffset % 100 == 0)
                     {
-                        application.StatusBar = "Building sheet for: " + metricName + " " +
-                        rowOffset.ToString() + "/" + dataThisMetric.Count;
+                        application.StatusBar = "Building sheet for: " + metric.Combo() + " " +
+                        index.ToString() + "/" + dataThisMetric.Count;
                     }
 
                     rowOffset++;
                 }
 
-                lastRowUsed[metricName] = rowOffset - 1;
+                lastRowUsed[metric.Combo()] = rowOffset - 1;
             }
         }
 
@@ -423,28 +458,19 @@ namespace ListTools
             }
         }
 
-        // If only a few metrics, show them all. But if > 12 (just a guess), ask the user to down select.
-        private List<string> SelectMetricsToUse(List<string> metrics)
+        // Show the metrics and ask the user to down select.
+        private List<NamePlusId> SelectMetricsToUse(List<NamePlusId> metrics)
         {
-            List<string> selectedMetrics = new List<string>();
-
-            foreach (string metric in metrics) 
-            {
-                selectedMetrics.Add(metric);
-            }
-
+            List<NamePlusId> selectedMetrics = new List<NamePlusId>();
             application.StatusBar = "Select metrics to extract.";
 
             // Ask user to downselect.
-            if (metrics.Count > 1)
+            using (SelectMetricsForm form = new SelectMetricsForm(metrics))
             {
-                using (SelectMetricsForm form = new SelectMetricsForm(metrics))
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        selectedMetrics.Clear();
-                        selectedMetrics = form.selectedMetrics;
-                    }
+                    selectedMetrics.Clear();
+                    selectedMetrics = form.selectedMetrics;
                 }
             }
 
@@ -454,30 +480,31 @@ namespace ListTools
         // If the metric names are all long, we can't just truncate to 31 characters
         // and we'll do better by eliminating the common parts.
         // BUT we'll need dictionaries to link them.
-        private void SheetNamesFromMetrics(List<string> metrics)
+        private void SheetNamesFromMetrics(List<NamePlusId> metrics)
         {
-            metricsToSheets = new Dictionary<string, string>();
+            metricsToSheets = new Dictionary<NamePlusId, string>();
 
             // The default case: sheet names and metric names are the same.
-            foreach (string metric in metrics)
+            foreach (NamePlusId metric in metrics)
             {
-                metricsToSheets.Add(metric, metric);
+                metricsToSheets.Add(metric, metric.name);
             }
 
             // We can just use the names provided if they're short enough to fit on the Sheet tab.
             // (But don't bother if just ONE metric--removing the common part will ERASE the name.)
-            if (metrics.Count > 1 && metrics.Any(word => word.Length > 31))
+            if (metrics.Count > 1 && metrics.Any(word => word.name.Length > 31))
             {
                 List<string> usableNames = new List<string>();
-                string commonPart = Utilities.CommonElements(metrics);
+                List<string> metricNames = metrics.Select(metric => metric.Combo()).ToList();
+                string commonPart = Utilities.CommonElements(metricNames);
 
                 if (!string.IsNullOrEmpty(commonPart))
                 {
                     metricsToSheets.Clear();
 
-                    foreach (string metric in metrics)
+                    foreach (NamePlusId metric in metrics)
                     {
-                        string sheetName = metric.Replace(commonPart, "");
+                        string sheetName = metric.Combo().Replace(commonPart, "");
                         metricsToSheets[metric] = sheetName;
                     }
                 }
