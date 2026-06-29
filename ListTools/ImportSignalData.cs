@@ -1,22 +1,21 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Tools.Excel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Application = Microsoft.Office.Interop.Excel.Application;
-using Workbook = Microsoft.Office.Interop.Excel.Workbook;
 using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
 
 
 namespace ListTools
 {
     // Classes were generated automatically by copying JSON data onto clipboard,
-    // then using Visual Studio tool: Edit/Paste Special/Paste JSON As classes.
+    // then using the Visual Studio tool: Edit/Paste Special/Paste JSON As classes.
     public class Rootobject
     {
         public Userwebmetadata UserWebMetadata { get; set; }
@@ -173,7 +172,6 @@ namespace ListTools
     {
         private Application application;
         private SignalNotesFormat format = SignalNotesFormat.OneBigSheet;
-        private Workbook thisWorkbook;
 
         // Metrics being used.
         private List<NamePlusId> selectedMetrics;
@@ -188,7 +186,6 @@ namespace ListTools
         {
             tables = new Dictionary<string, PhysicianTable>();
             application = Globals.ThisAddIn.Application;
-            thisWorkbook = Globals.ThisAddIn.Application.ActiveWorkbook;
         }
 
         private List<string> AskUserForFiles()
@@ -320,6 +317,8 @@ namespace ListTools
                     {
                         application.StatusBar = "Compiling list of metrics.";
                         selectedMetrics = SelectMetricsToUse(obj.Metrics());
+
+                        // We need to keep track of the last row written to on each worksheet.
                         InitializeLastRowDictionary();
 
                         firstFile = false;
@@ -328,6 +327,9 @@ namespace ListTools
                     BuildSheets(obj);
                 }
             }
+
+            // Sort each worksheet by name, then date.
+            SortSheets();
         }
 
         private void InitializeLastRowDictionary()
@@ -389,6 +391,7 @@ namespace ListTools
 
         private void PutAllPhysiciansOnSameSheet(List<Datum> sortedData)
         {
+            // We'll label the worksheets using the metric ID numbers (the names can be too long).
             List<int> metricIds = selectedMetrics.Select(metric => metric.id).ToList();
 
             foreach (int metricId in metricIds)
@@ -409,15 +412,8 @@ namespace ListTools
                 }
                 else
                 {
-                    List<string> worksheetNames = new List<string>();
-
-                    foreach (Worksheet sht in thisWorkbook.Worksheets)
-                    {
-                        worksheetNames.Append(sht.Name); 
-                    }
-
                     // Lookup by name.
-                    thisSheet = (Worksheet)thisWorkbook.Worksheets[metricId.ToString()];
+                    thisSheet = Utilities.FindWorksheetByName(metricId.ToString());
                 }
 
                 Range r = thisSheet.Cells[1, 1];
@@ -485,6 +481,55 @@ namespace ListTools
             }
 
             return selectedMetrics;
+        }
+
+        private void SortSheets()
+        {
+            foreach(Worksheet sheet in Utilities.GetAllWorksheets())
+            {
+                if (sheet == null) return;
+
+                int bottomRow = Utilities.FindLastRow(sheet);
+
+                if (bottomRow == 0)
+                {
+                    continue;
+                }
+
+                Range sortRange = sheet.get_Range("A1", "J" + bottomRow.ToString());
+                Range nameColumn = sheet.get_Range("A1", "A" + bottomRow.ToString());
+                Range dateColumn = sheet.get_Range("J1", "J" + bottomRow.ToString());
+
+                try
+                {
+                    sheet.Sort.SortFields.Clear();
+
+                    // First sort by provider name.
+                    sheet.Sort.SortFields.Add(
+                        Key: nameColumn,
+                        SortOn: XlSortOn.xlSortOnValues,
+                        Order: XlSortOrder.xlAscending,
+                        DataOption: XlSortDataOption.xlSortNormal);
+
+                    // Then by date.
+                    sheet.Sort.SortFields.Add(
+                        Key: dateColumn,
+                        SortOn: XlSortOn.xlSortOnValues,
+                        Order: XlSortOrder.xlAscending,
+                        DataOption: XlSortDataOption.xlSortNormal);
+
+                    // Execute the sort.
+                    sheet.Sort.SetRange(sortRange);
+                    sheet.Sort.Header = XlYesNoGuess.xlYes;
+                    sheet.Sort.Orientation = XlSortOrientation.xlSortColumns;
+                    sheet.Sort.Apply();
+                }
+                catch (COMException ex)
+                {
+                    // Sheet is probably blank--skip it.
+                    continue;
+                }
+            }
         }
     }
 }

@@ -551,6 +551,50 @@ namespace ListTools
             return names;
         }
 
+        internal static List<Worksheet> GetAllWorksheets()
+        {
+            Workbook thisWorkbook = Globals.ThisAddIn.Application.ActiveWorkbook;
+            List<Worksheet> worksheets = new List<Worksheet>();
+
+            foreach (Worksheet sht in thisWorkbook.Worksheets)
+            {
+                worksheets.Add(sht);
+            }
+
+            return worksheets;
+        }
+
+        internal static NameMatch FindClosestMatch(List<string> names, string desiredName, double maxDistanceAllowed = 1.0)
+        {
+            double lowestScore = 1000000;
+            string bestMatch = string.Empty;
+
+            Fastenshtein.Levenshtein lev = new Fastenshtein.Levenshtein(desiredName);
+
+            foreach (string thisName in names)
+            {
+                double wordLength = (double)Math.Min(desiredName.Length, thisName.Length);
+                int levenshteinDistance = lev.DistanceFrom(thisName);
+                double relativeDistance = levenshteinDistance / wordLength;
+
+                if (thisName.StartsWith(desiredName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return new NameMatch(bestMatch: thisName, matchType: TypeOfMatch.MatchStartsWithDesiredName);
+                }
+                else if (desiredName.StartsWith(thisName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return new NameMatch(bestMatch: thisName, matchType: TypeOfMatch.DesiredNameStartsWithMatch);
+                }
+                else if (relativeDistance < lowestScore && relativeDistance < maxDistanceAllowed)
+                {
+                    bestMatch = thisName;
+                    lowestScore = relativeDistance;
+                }
+            }
+
+            return new NameMatch(bestMatch: bestMatch, matchType: TypeOfMatch.Levenshtein, relativeDistance: lowestScore);
+        }
+
         /// <summary>
         /// Finds the column name corresponding to a Range in a <name, Range> dictionary.
         /// </summary>
@@ -607,28 +651,35 @@ namespace ListTools
             Worksheet sheet = rng.Worksheet;
             return sheet.Cells.Find(
                                     "*",
-                                    System.Reflection.Missing.Value,
-                                    Excel.XlFindLookIn.xlValues,
-                                    Excel.XlLookAt.xlWhole,
-                                    Excel.XlSearchOrder.xlByRows,
-                                    Excel.XlSearchDirection.xlPrevious,
+                                    Missing.Value,
+                                    XlFindLookIn.xlValues,
+                                    XlLookAt.xlWhole,
+                                    XlSearchOrder.xlByRows,
+                                    XlSearchDirection.xlPrevious,
                                     false,
-                                    System.Reflection.Missing.Value,
-                                    System.Reflection.Missing.Value).Row;
+                                    Missing.Value,
+                                    Missing.Value).Row;
         }
 
         internal static int FindLastRow(Worksheet sheet)
         {
-            return sheet.Cells.Find(
-                                    "*",
-                                    System.Reflection.Missing.Value,
-                                    Excel.XlFindLookIn.xlValues,
-                                    Excel.XlLookAt.xlWhole,
-                                    Excel.XlSearchOrder.xlByRows,
-                                    Excel.XlSearchDirection.xlPrevious,
-                                    false,
-                                    System.Reflection.Missing.Value,
-                                    System.Reflection.Missing.Value).Row;
+            try
+            {
+                return sheet.Cells.Find(
+                                        "*",
+                                        Missing.Value,
+                                        XlFindLookIn.xlValues,
+                                        XlLookAt.xlWhole,
+                                        XlSearchOrder.xlByRows,
+                                        XlSearchDirection.xlPrevious,
+                                        false,
+                                        Missing.Value,
+                                        Missing.Value).Row;
+            }
+            catch (NullReferenceException)
+            {
+                return 0;
+            }
         }
 
         /// <summary>
@@ -646,37 +697,6 @@ namespace ListTools
             }
 
             return sheets.LastOrDefault();
-        }
-
-        internal static NameMatch FindClosestMatch(List<string> names, string desiredName, double maxDistanceAllowed = 1.0)
-        {
-            double lowestScore = 1000000;
-            string bestMatch = string.Empty;
-
-            Fastenshtein.Levenshtein lev = new Fastenshtein.Levenshtein(desiredName);
-
-            foreach (string thisName in names)
-            {
-                double wordLength = (double)Math.Min(desiredName.Length, thisName.Length);
-                int levenshteinDistance = lev.DistanceFrom(thisName);
-                double relativeDistance = levenshteinDistance / wordLength;
-
-                if (thisName.StartsWith(desiredName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return new NameMatch(bestMatch: thisName, matchType: TypeOfMatch.MatchStartsWithDesiredName);
-                }
-                else if (desiredName.StartsWith(thisName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return new NameMatch(bestMatch: thisName, matchType: TypeOfMatch.DesiredNameStartsWithMatch);
-                }
-                else if (relativeDistance < lowestScore && relativeDistance < maxDistanceAllowed)
-                {
-                    bestMatch = thisName;
-                    lowestScore = relativeDistance;
-                }
-            }
-
-            return new NameMatch(bestMatch: bestMatch, matchType: TypeOfMatch.Levenshtein, relativeDistance: lowestScore);
         }
 
         internal static Rows FindNamesExact(Worksheet sheet, string namesColumnName, string desiredName)
@@ -754,6 +774,26 @@ namespace ListTools
             }
 
             return toolTip;
+        }
+
+        /// <summary>
+        /// Finds the existing worksheet with this name.
+        /// </summary>
+        /// <param name="name">Sheet name</param>
+        /// <returns>Worksheet</returns>
+        internal static Worksheet FindWorksheetByName(string name)
+        {
+            Workbook thisWorkbook = Globals.ThisAddIn.Application.ActiveWorkbook;
+            List<string> worksheetNames = new List<string>();
+
+            foreach (Worksheet sht in thisWorkbook.Worksheets)
+            {
+                worksheetNames.Append(sht.Name);
+            }
+
+            // Lookup by name.
+            Worksheet thisSheet = (Worksheet)thisWorkbook.Worksheets[name];
+            return thisSheet;
         }
 
         /// <summary>
