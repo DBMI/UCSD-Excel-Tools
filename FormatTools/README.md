@@ -8,6 +8,8 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * [Copy the formatting](./help%20files/CopyFormatting/CopyFormatting.md) from one sheet onto the next sheet(s).
 * [Convert dates](./help%20files/ConvertMUMPS/ConvertMUMPS.md) from [MUMPS](https://en.wikipedia.org/wiki/MUMPS) to Excel standard.
 * [Convert dates to text format](./help%20files/DateToText/DateToText.md) for easier import into R.
+* Export an Excel table in Markdown table format. 
 * [Highlight blocks of similar data](./help%20files/StripeByValue/StripeByValue.md)
+* Select the color used in stripe highlighting. 
 * [Count words & characters](./help%20files/CountWords/CountWords.md)
 
