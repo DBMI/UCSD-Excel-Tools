@@ -1,12 +1,9 @@
 ﻿using Microsoft.Office.Core;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using ListTools.Properties;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
@@ -47,7 +44,7 @@ namespace ListTools
         /////////////////////////////////
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c ImportList button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c ImportList button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -57,7 +54,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c ChopIntoTabsButton button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c ChopIntoTabsButton button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -67,7 +64,17 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c Histogram button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c csvExportButton button.
+        /// </summary>
+        /// <param name="control">Reference to the IRibbonControl object.</param>
+        /// <returns>Bitmap</returns>
+        public Bitmap csvExportButton_GetImage(IRibbonControl control)
+        {
+            return Resources.export_csv;
+        }
+
+        /// <summary>
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c Histogram button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -77,7 +84,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c lookupNpi button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c lookupNpi button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -87,7 +94,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c MatchPhysiciansButton button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c MatchPhysiciansButton button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -97,7 +104,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c onCallList button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c onCallList button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -107,7 +114,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c SearchByEmail button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c SearchByEmail button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -117,7 +124,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c SignalImportButton button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c SignalImportButton button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -127,7 +134,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c SortTimes button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c SortTimes button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -137,7 +144,7 @@ namespace ListTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c SortTimesSettings button.
+        /// Lets the @c ListToolsRibbon.xml point to the image for the @c SortTimesSettings button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -234,6 +241,16 @@ namespace ListTools
             EmailSearcher emailSearcher = new EmailSearcher();
             Excel.Worksheet wksheet = (Excel.Worksheet)Globals.ThisAddIn.Application.ActiveSheet;
             emailSearcher.Search(wksheet);
+        }
+
+        /// <summary>
+        /// When @c csvExport button is pressed, calls Utilities.SaveActiveSheetAsCsv() method.
+        /// </summary>
+        /// <param name="control">Reference to the IRibbonControl object.</param>
+
+        public void OnSheetExport(IRibbonControl control)
+        {
+            Utilities.SaveActiveSheetAsCsv();
         }
 
         /// <summary>
