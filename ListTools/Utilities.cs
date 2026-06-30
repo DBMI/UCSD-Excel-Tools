@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1602,6 +1603,53 @@ namespace ListTools
 
             return foundIt;
         }
+
+
+        /// <summary>
+        /// Saves the worksheet as CSV.
+        /// </summary>
+        internal static void SaveActiveSheetAsCsv()
+        {
+            // Get the active workbook from the VSTO application context.
+            Excel.Workbook workbook = Globals.ThisAddIn.Application.ActiveWorkbook;
+            
+            if (workbook != null)
+            {
+                // Returns just the directory path (e.g., "C:\Documents").
+                string folderPath = workbook.Path;
+
+                Worksheet activeSheet = (Worksheet)workbook.ActiveSheet;
+                string sheetName = activeSheet.Name;
+
+                string outputPath = Path.Combine(folderPath, sheetName + ".csv");
+
+                // Turn off alerts to suppress the "Some features might be lost" CSV warning prompt.
+                Globals.ThisAddIn.Application.DisplayAlerts = false;
+
+                try
+                {
+                    // Save the active worksheet as a comma-delimited CSV.
+                    workbook.SaveAs(
+                        Filename: outputPath,
+                        FileFormat: XlFileFormat.xlCSV,
+                        ConflictResolution: XlSaveConflictResolution.xlLocalSessionChanges
+                    );
+
+                    MessageBox.Show($"Saved file to: '{outputPath}'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (System.Runtime.InteropServices.COMException ex)
+                {
+                    // Handle cases where the path is invalid or file is locked
+                    MessageBox.Show($"Export failed: {ex.Message}");
+                }
+                finally
+                {
+                    // Always turn alerts back on so you don't break default Excel behavior
+                    Globals.ThisAddIn.Application.DisplayAlerts = true;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Saves the workbook as revised using a new name.

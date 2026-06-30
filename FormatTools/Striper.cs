@@ -15,7 +15,6 @@ namespace FormatTools
         private Range selectedColumnRng;
         private Dictionary<string, Block> sourceBlocks;
         private Worksheet thisWorksheet;
-        private XlRgbColor powderBlue = XlRgbColor.rgbLightSkyBlue;
 
         internal Striper()
         {

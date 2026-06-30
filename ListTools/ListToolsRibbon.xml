@@ -16,8 +16,16 @@
 					getImage="signalImportButton_GetImage"
 					label="Import Signal Data"
 					onAction="OnSignalImport"
+					screentip="Import Signal data"
 					size="large"
-					screentip="Import Signal data from JSON file"/>
+					supertip="Import Signal data from JSON file(s)"/>
+			<button id="csvExportButton"
+					getImage="csvExportButton_GetImage"
+					label="Export Sheet as CSV"
+					onAction="OnSheetExport"
+					screentip="Export sheet as CSV"
+					size="large"
+					supertip="Export active sheet as CSV"/>
 			<button id="chopIntoTabsButton"
 					getImage="chopIntoTabsButton_GetImage"
 					label="Separate Tabs"
