@@ -1,10 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Tools.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
 
 namespace FormatTools
@@ -44,13 +39,13 @@ namespace FormatTools
             return new Block(newStartingRowOffset, newStartingRowOffset + numRows() - 1);
         }
 
-        internal void shade(Worksheet worksheet, XlRgbColor shade)
+        internal void shade(Worksheet worksheet, Color shade)
         {
             int lastColInSheet = worksheet.UsedRange.Columns.Count;
 
             Range startCell = (Range)worksheet.Cells[startRowOffset + 1, 1];
             Range endCell = (Range)worksheet.Cells[endRowOffset + 1, lastColInSheet];
-            Range theseRows = (Range)worksheet.Range[startCell, endCell];
+            Range theseRows = worksheet.Range[startCell, endCell];
             theseRows.Interior.Color = shade;
         }
 

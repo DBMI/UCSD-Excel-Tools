@@ -1,13 +1,9 @@
 ﻿using Microsoft.Office.Core;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Text;
 using FormatTools.Properties;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
@@ -49,7 +45,17 @@ namespace FormatTools
 
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c CopyFormatting button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c CopyFormatting button.
+        /// </summary>
+        /// <param name="control">Reference to the IRibbonControl object.</param>
+        /// <returns>Bitmap</returns>
+        public Bitmap colorSelectorButton_GetImage(IRibbonControl control)
+        {
+            return Resources.color_selector;
+        }
+
+        /// <summary>
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c CopyFormatting button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -59,7 +65,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c CountWords button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c CountWords button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -69,7 +75,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c ConvertDates button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c ConvertDates button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -79,7 +85,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c DateToText button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c DateToText button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -89,7 +95,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c FormatAsMarkdown button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c FormatAsMarkdown button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -99,7 +105,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c FormatResults button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c FormatResults button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -109,7 +115,7 @@ namespace FormatTools
         }
 
         /// <summary>
-        /// Lets the @c DecsExcelRibbon.xml point to the image for the @c Stripe button.
+        /// Lets the @c FormatToolsRibbon.xml point to the image for the @c Stripe button.
         /// </summary>
         /// <param name="control">Reference to the IRibbonControl object.</param>
         /// <returns>Bitmap</returns>
@@ -122,6 +128,16 @@ namespace FormatTools
         ///         ACTIONS           ///
         ///                           ///
         /////////////////////////////////
+
+        /// <summary>
+        /// When @c colorSelector button is pressed, this method instantiates a @c ColorSelector object & calls its @c Select method.
+        /// </summary>
+        /// <param name="control">Reference to the IRibbonControl object.</param>
+
+        public void OnColorSelection(IRibbonControl control)
+        {
+            ColorSelector.Select();
+        }
 
         /// <summary>
         /// When @c ConvertDates button is pressed, this method instantiates a @c MumpsDateConverter object & calls its @c ConvertColumn method.
