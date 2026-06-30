@@ -1,6 +1,6 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
-using System.Web.UI.WebControls;
+using System.Drawing;
 using System.Windows.Forms;
 
 
@@ -65,7 +65,10 @@ namespace FormatTools
             
             // Remove all old shading.
             Utilities.ClearWorksheet(worksheet);
-            
+
+            // Retrieve color preference.
+            Color highlightColor = ColorSelector.RetrieveSavedColor();
+
             if (FindSelectedCategory(worksheet))
             {
                 // Figure out the distinct category values & where they are.
@@ -82,7 +85,7 @@ namespace FormatTools
                     {
                         // Find the Block of rows in the sheet corresponding to this value.
                         Block thisBlock = sourceBlocks[blockName];
-                        thisBlock.shade(thisWorksheet, powderBlue);
+                        thisBlock.shade(thisWorksheet, highlightColor);
                     }
 
                     blockIndex++;
