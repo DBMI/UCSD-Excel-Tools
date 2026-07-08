@@ -111,6 +111,9 @@ namespace SpatialTools
                 if (rowOffset % 10 == 0)
                 {
                     application.StatusBar = "Processed " + rowOffset.ToString() + " addresses.";
+
+                    // Keep window from freezing/disconnecting.
+                    System.Windows.Forms.Application.DoEvents();
                 }
 
                 if (rowOffset % PAUSE_AFTER_THIS_MANY == 0)
