@@ -8,3 +8,5 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * [Dither dates/times](./help%20files/ObscureDateTime/ObscureDateTime.md) to deidentify patients.
 * [Replace names](./help%20files/HideDrNames/HideDrNames.md) with randomized code numbers.
 * [Generate fake](./help%20files/GenerateFakes/GenerateFakes.md) patient information for testing.
+
+[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases/tag/deidentify-v1.0.0.0)
