@@ -29,4 +29,4 @@ jobs:
             **/*-v*.zip
           generate_release_notes: true # Auto-generates changelogs from your commit messages
         env:
-          GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
