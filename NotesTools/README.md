@@ -7,3 +7,5 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * [Scan `Notes` fields](./help%20files/SearchNotes/SearchNotes.md) for keywords, creating new columns.
 * [Merge notes](./help%20files/MergeNotes/MergeNotes.md) from one sheet into another according to some index column (like CSN).
 * [Extract the payload message](./help%20files/ExtractText/ExtractText.md) from a message thread.
+
+[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases/tag/notes-v1.0.0.0)
