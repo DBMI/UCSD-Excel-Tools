@@ -428,7 +428,7 @@
   <Target Name="ZipPublishOutput" AfterTargets="PublishOnly">
     <!-- Define the output zip path and name -->
     <PropertyGroup>
-      <ZipFileName>$(PublishUrl)\list-v$(ApplicationVersion).$(ApplicationRevision)zip</ZipFileName>
+      <ZipFileName>$(PublishUrl)\List Tools-v$(ApplicationVersion).$(ApplicationRevision)zip</ZipFileName>
     </PropertyGroup>
     <!-- Delete any previous zip file to prevent append errors. -->
     <Delete Files="$(ZipFileName)" Condition="Exists('$(ZipFileName)')" />
