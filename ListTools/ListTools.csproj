@@ -420,6 +420,10 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <!-- Remove old versions -->
+  <Target Name="ClearPublishFolder" BeforeTargets="PrepareForPublish">
+    <RemoveDir Directories="$(ProjectDir)\publish\" />
+  </Target>  
   <!-- Automatically create .zip file for release. -->
   <Target Name="ZipPublishOutput" AfterTargets="PublishOnly">
     <!-- Define the output zip path and name -->
