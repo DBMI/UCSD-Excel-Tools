@@ -374,4 +374,15 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <!-- Automatically create .zip file for release. -->
+  <Target Name="ZipPublishOutput" AfterTargets="PublishOnly">
+    <!-- Define the output zip path and name -->
+    <PropertyGroup>
+      <ZipFileName>$(PublishUrl)\spatial-v$(ApplicationVersion).$(ApplicationRevision)zip</ZipFileName>
+    </PropertyGroup>
+    <!-- Delete any previous zip file to prevent append errors. -->
+    <Delete Files="$(ZipFileName)" Condition="Exists('$(ZipFileName)')" />
+    <!-- Zip the contents of the publish directory. -->
+    <ZipDirectory SourceDirectory="$(PublishDir)" DestinationFile="$(ZipFileName)" />
+  </Target>
 </Project>
