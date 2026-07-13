@@ -1,0 +1,32 @@
+#
+# https://share.google/aimode/OUrx62hk1qrOMZIJf
+#
+name: Publish GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers the workflow only when you push a version tag like v1.0.1
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Grants permissions to create the release and upload files
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # OPTIONAL: Insert your build steps here (e.g., npm run build, cargo build, etc.)
+      # - name: Build Project
+      #   run: your-build-command-here
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            **/*-v*.zip
+          generate_release_notes: true # Auto-generates changelogs from your commit messages
+        env:
+          GITHUB_TOKEN: ${{ secrets.API_TOKEN }}

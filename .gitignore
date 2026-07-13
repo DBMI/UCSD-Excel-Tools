@@ -1,0 +1,8 @@
+
+bin/
+obj/
+Application Files
+*.vsto
+setup.exe
+*.backup
+*.pfx
