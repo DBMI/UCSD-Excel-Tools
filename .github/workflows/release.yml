@@ -1,32 +1,54 @@
 #
-# https://share.google/aimode/OUrx62hk1qrOMZIJf
+# https://share.google/aimode/MIsX6rywadwPrBmUS
+# https://share.google/aimode/u0J5kV3PQb4RE0s8Y
 #
-name: Publish GitHub Release
+name: Build and Release VSTO App
 
 on:
-  push:
-    tags:
-      - 'v*' # Triggers the workflow only when you push a version tag like v1.0.1
+  pull_request:
+    types: [closed]
+    branches:
+      - main # Or your default branch name (e.g., master)
 
 jobs:
-  build-and-release:
-    runs-on: ubuntu-latest
+  release:
+    # Only run if the PR was actually merged, not just closed without merging
+    if: github.event.pull_request.merged == true
+    
+    runs-on: windows-latest
     permissions:
-      contents: write # Grants permissions to create the release and upload files
+      contents: write
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # OPTIONAL: Insert your build steps here (e.g., npm run build, cargo build, etc.)
-      # - name: Build Project
-      #   run: your-build-command-here
+      - name: Extract File Name for Release Tag
+        id: get_tag
+        shell: powershell
+        run: |
+          # Locate the versioned zip file using the pattern
+          $zipFile = Get-ChildItem -Path . -Filter "*-v*.zip" -Recurse | Select-Object -First 1
+          
+          if ($null -eq $zipFile) {
+              Write-Error "Could not find any VSTO zip file matching the pattern *-v*.zip"
+              exit 1
+          }
+          
+          # Extract the file name without the .zip extension
+          $tagName = $zipFile.BaseName
+          Write-Output "Found VSTO package: $tagName"
+          
+          # Save the dynamic tag name to the GitHub Actions output context
+          Echo "TAG_NAME=$tagName" >> $env:GITHUB_OUTPUT
 
-      - name: Create Release and Upload Assets
+      - name: Create Release and Upload Zip
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.get_tag.outputs.TAG_NAME }}
+          name: ${{ steps.get_tag.outputs.TAG_NAME }}
           files: |
             **/*-v*.zip
-          generate_release_notes: true # Auto-generates changelogs from your commit messages
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
