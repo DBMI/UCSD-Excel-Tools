@@ -8,4 +8,4 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * [Lookup Healthy Places Index](./help%20files/HPI/HPI.md) ([HPI](https://www.healthyplacesindex.org/)) from Census tract
 * [Lookup Social Vulnerability Index](./help%20files/SVI/SVI.md) ([SVI](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)) from Census tract.
 
-[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases/tag/spatial-v1.0.0.2)
+[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases)

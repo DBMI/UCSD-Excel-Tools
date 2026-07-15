@@ -13,4 +13,4 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * Select the color used in stripe highlighting. 
 * [Count words & characters](./help%20files/CountWords/CountWords.md)
 
-[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases/tag/format-v1.0.0.5)
+[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases)
