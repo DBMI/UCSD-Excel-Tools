@@ -11,4 +11,4 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * [Merge rows](./help%20files/MergeRows/MergeRows.md) across dates.
 * Merge multiple query output files into one spreadsheet.
 
-[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases/tag/merge-v1.0.0.0)
+[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases)

@@ -16,4 +16,4 @@ Creates custom buttons in Microsoft Excel that allow user to:
 * [Set thresholds](./help%20files/ChooseThresholds/ChooseThresholds.md) for text parsing into priorities.
 * [Build histogram table](./help%20files/BuildHistogram/BuildHistogram.md) from existing data.
 
-[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases/tag/list-v.1.0.0.5)
+[Download](https://github.com/DBMI/UCSD-Excel-Tools/releases)
