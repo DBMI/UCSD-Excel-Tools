@@ -73,6 +73,16 @@ namespace ListTools.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap export_csv {
+            get {
+                object obj = ResourceManager.GetObject("export_csv", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap help_small {
             get {
                 object obj = ResourceManager.GetObject("help_small", resourceCulture);

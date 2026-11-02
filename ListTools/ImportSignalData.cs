@@ -370,21 +370,25 @@ namespace ListTools
             r.Offset[0, 6].EntireColumn.NumberFormat = "mm/dd/yyyy";
             r.Offset[0, 6].EntireColumn.ColumnWidth = 16;
 
-            r.Offset[0, 7].Value2 = "Numerator";
+            r.Offset[0, 7].Value2 = "Metric";
             r.Offset[0, 7].Font.Bold = true;
-            r.Offset[0, 7].EntireColumn.NumberFormat = "0.0";
-            r.Offset[0, 7].EntireColumn.ColumnWidth = 12;
+            r.Offset[0, 7].EntireColumn.ColumnWidth = 44;
 
-            r.Offset[0, 8].Value2 = "Denominator";
+            r.Offset[0, 8].Value2 = "Numerator";
             r.Offset[0, 8].Font.Bold = true;
+            r.Offset[0, 8].EntireColumn.NumberFormat = "0.0";
             r.Offset[0, 8].EntireColumn.ColumnWidth = 12;
 
-            r.Offset[0, 9].Value2 = metricName;
+            r.Offset[0, 9].Value2 = "Denominator";
             r.Offset[0, 9].Font.Bold = true;
-            r.Offset[0, 9].EntireColumn.NumberFormat = "0.0";
-            r.Offset[0, 9].EntireColumn.ColumnWidth = 20;
+            r.Offset[0, 9].EntireColumn.ColumnWidth = 12;
 
-            Range headings = sheet.Range[r, r.Offset[0, 9]];
+            r.Offset[0, 10].Value2 = metricName;
+            r.Offset[0, 10].Font.Bold = true;
+            r.Offset[0, 10].EntireColumn.NumberFormat = "0.0";
+            r.Offset[0, 10].EntireColumn.ColumnWidth = 20;
+
+            Range headings = sheet.Range[r, r.Offset[0, 10]];
             Borders borders = headings.Borders;
             borders[XlBordersIndex.xlEdgeBottom].Weight = XlBorderWeight.xlThick;
         }
@@ -420,8 +424,11 @@ namespace ListTools
                 int rowOffset = lastRow + 1;
                 int index = 0;
 
-                // Find by metric ID, not just the name.
-                List<Datum> dataThisMetric = sortedData.Where(obj => obj.MetricID == metric.id).ToList();
+                // Find by metric ID and name.
+                List<Datum> dataThisMetric = sortedData
+                    .Where(obj => obj.MetricID == metric.id)
+                    .Where(obj => obj.Metric == metric.name)
+                    .ToList();
 
                 foreach (Datum datum in dataThisMetric)
                 {
@@ -432,9 +439,10 @@ namespace ListTools
                     r.Offset[rowOffset, 4].Value2 = datum.Specialty;
                     r.Offset[rowOffset, 5].Value2 = datum.UserType;
                     r.Offset[rowOffset, 6].Value2 = datum.ReportingPeriodEndDate;
-                    r.Offset[rowOffset, 7].Value2 = datum.Numerator;
-                    r.Offset[rowOffset, 8].Value2 = datum.Denominator;
-                    r.Offset[rowOffset, 9].Value2 = datum.Value;
+                    r.Offset[rowOffset, 7].Value2 = datum.Metric + " [" + datum.MetricID + "]";
+                    r.Offset[rowOffset, 8].Value2 = datum.Numerator;
+                    r.Offset[rowOffset, 9].Value2 = datum.Denominator;
+                    r.Offset[rowOffset, 10].Value2 = datum.Value;
                     index++;
 
                     if (rowOffset % 100 == 0)
@@ -485,7 +493,7 @@ namespace ListTools
 
         private void SortSheets()
         {
-            foreach(Worksheet sheet in Utilities.GetAllWorksheets())
+            foreach (Worksheet sheet in Utilities.GetAllWorksheets())
             {
                 if (sheet == null) return;
 
