@@ -34,7 +34,7 @@
     <PublishUrl>publish\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.5</ApplicationVersion>
+    <ApplicationVersion>1.1.0.1</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -423,7 +423,7 @@
   <!-- Remove old versions -->
   <Target Name="ClearPublishFolder" BeforeTargets="PrepareForPublish">
     <RemoveDir Directories="$(ProjectDir)\publish\" />
-  </Target>  
+  </Target>
   <!-- Automatically create .zip file for release. -->
   <Target Name="ZipPublishOutput" AfterTargets="PublishOnly">
     <!-- Define the output zip path and name -->
