@@ -1,5 +1,4 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -565,6 +564,26 @@ namespace ListTools
             return worksheets;
         }
 
+        /// <summary>
+        /// Finds the column letter corresponding column number.
+        /// </summary>
+        /// <param name="columnNumber">int</param>
+        /// <returns>string</returns>        
+
+        public static string GetColumnLetter(int columnNumber)
+        {
+            string columnLetter = string.Empty;
+
+            while (columnNumber > 0)
+            {
+                int modulo = (columnNumber - 1) % 26;
+                columnLetter = (char)('A' + modulo) + columnLetter;
+                columnNumber = (columnNumber - modulo) / 26;
+            }
+
+            return columnLetter;
+        }
+
         internal static NameMatch FindClosestMatch(List<string> names, string desiredName, double maxDistanceAllowed = 1.0)
         {
             double lowestScore = 1000000;
@@ -618,6 +637,25 @@ namespace ListTools
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Finds the column name matching a Regex pattern.
+        /// </summary>
+        /// <param name="columnNamesDict">Dictionary linking column names to ranges</param>
+        /// <param name="pattern">Regex pattern</param>
+        /// <returns>Range</returns>
+
+        internal static Range FindColumnLike(Dictionary<string, Range> columnNamesDict, string pattern)
+        {
+            var match = columnNamesDict.FirstOrDefault(kvp => Regex.IsMatch(kvp.Key, pattern));
+
+            if (match.Key != null)
+            {
+                return match.Value;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -1612,7 +1650,7 @@ namespace ListTools
         {
             // Get the active workbook from the VSTO application context.
             Excel.Workbook workbook = Globals.ThisAddIn.Application.ActiveWorkbook;
-            
+
             if (workbook != null)
             {
                 // Returns just the directory path (e.g., "C:\Documents").
