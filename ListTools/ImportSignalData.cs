@@ -101,7 +101,7 @@ namespace ListTools
 
     // Holds both the NAME and ID of a metric.
     // This lets us distinguish among metrics with the same name but different IDs.
-    public class NamePlusId
+    public class NamePlusId : IComparable<NamePlusId>
     {
         public string name;
         public int id;
@@ -116,6 +116,25 @@ namespace ListTools
         public string Combo()
         {
             return this.name + "_" + this.id.ToString();
+        }
+
+        // Implementing the IComparable<T> contract
+        public int CompareTo(NamePlusId other)
+        {
+            // 1. Handle potential null parameters safely
+            if (other == null) return 1; // Current instance is greater than null
+
+            // 2. Primary sort: Compare the Metric strings
+            // String.Compare handles null strings and localization rules automatically
+            int metricComparison = string.Compare(this.name, other.name, StringComparison.OrdinalIgnoreCase);
+
+            if (metricComparison != 0)
+            {
+                return metricComparison; // If they are different, return the string comparison result
+            }
+
+            // 3. Secondary sort (Tie-breaker): Compare the Id integers if metrics are identical
+            return this.id.CompareTo(other.id);
         }
     }
 
@@ -177,7 +196,7 @@ namespace ListTools
         private List<NamePlusId> selectedMetrics;
 
         // Keep track of the last row we used on each sheet.
-        private Dictionary<int, int> lastRowUsed;
+        private Dictionary<NamePlusId, int> lastRowUsed;
 
         // Keep track of the sheet used for each physician AND what row we last used on that sheet.
         private Dictionary<string, PhysicianTable> tables;
@@ -214,10 +233,10 @@ namespace ListTools
         {
             application.StatusBar = "Sorting imported data.";
 
-            // Sort the data objects by metricName, then physician name, then date.
-            List<Datum> sortedData = obj.Data.OrderBy(x => x.Metric).
-                                              ThenBy(y => y.ClinicianName).
-                                              ThenBy(y => y.ReportingPeriodEndDate).ToList();
+            // Sort the data objects by FULL metricName, then physician name, then date.
+            List<Datum> sortedData = obj.Data.OrderBy(x => x.MetricPlusId())
+                                             .ThenBy(x => x.ClinicianName)
+                                             .ThenBy(x => x.ReportingPeriodEndDate).ToList();
 
             if (format == SignalNotesFormat.OneBigSheet)
             {
@@ -335,12 +354,11 @@ namespace ListTools
         private void InitializeLastRowDictionary()
         {
             // Sheet name to last row.
-            lastRowUsed = new Dictionary<int, int>();
-            List<int> metricIds = selectedMetrics.Select(metric => metric.id).ToList();
+            lastRowUsed = new Dictionary<NamePlusId, int>();
 
-            foreach (int metricId in metricIds)
+            foreach (NamePlusId metric in selectedMetrics)
             {
-                lastRowUsed[metricId] = 0;
+                lastRowUsed[metric] = 0;
             }
         }
 
@@ -395,29 +413,23 @@ namespace ListTools
 
         private void PutAllPhysiciansOnSameSheet(List<Datum> sortedData)
         {
-            // We'll label the worksheets using the metric ID numbers (the names can be too long).
-            List<int> metricIds = selectedMetrics.Select(metric => metric.id).ToList();
-
-            foreach (int metricId in metricIds)
+            foreach (NamePlusId metric in selectedMetrics)
             {
-                // Metric object with this ID.
-                NamePlusId metric = selectedMetrics.First(obj => obj.id == metricId);
-
                 // What was the last row we used on this sheet?
-                int lastRow = lastRowUsed[metricId];
+                int lastRow = lastRowUsed[metric];
 
                 Worksheet thisSheet;
 
                 // Is this the first time we put data on this sheet?
                 if (lastRow == 0)
                 {
-                    thisSheet = Utilities.CreateNewNamedSheet(metricId.ToString());
+                    thisSheet = Utilities.CreateNewNamedSheet(metric.id.ToString());
                     InitializeSheet(thisSheet, metric.Combo());
                 }
                 else
                 {
                     // Lookup by name.
-                    thisSheet = Utilities.FindWorksheetByName(metricId.ToString());
+                    thisSheet = Utilities.FindWorksheetByName(metric.id.ToString());
                 }
 
                 Range r = thisSheet.Cells[1, 1];
@@ -449,12 +461,16 @@ namespace ListTools
                     {
                         application.StatusBar = "Building sheet for: " + metric.Combo() + " " +
                         index.ToString() + "/" + dataThisMetric.Count;
+                        //System.Windows.Forms.Application.DoEvents();
+                        //Globals.ThisAddIn.Application.Goto(r.Offset[rowOffset, 0], Scroll: true);
                     }
 
                     rowOffset++;
                 }
 
-                lastRowUsed[metric.id] = rowOffset - 1;
+                //System.Windows.Forms.Application.DoEvents();
+                //Globals.ThisAddIn.Application.Goto(r.Offset[rowOffset, 0], Scroll: true);
+                lastRowUsed[metric] = rowOffset - 1;
             }
         }
 
@@ -504,9 +520,27 @@ namespace ListTools
                     continue;
                 }
 
-                Range sortRange = sheet.get_Range("A1", "J" + bottomRow.ToString());
-                Range nameColumn = sheet.get_Range("A1", "A" + bottomRow.ToString());
-                Range dateColumn = sheet.get_Range("J1", "J" + bottomRow.ToString());
+                int lastCol = Utilities.FindLastCol(sheet);
+
+                if (lastCol == 0)
+                {
+                    continue;
+                }
+
+                string letterOfLastCol = Utilities.GetColumnLetter(lastCol);
+
+                // Find the "Date" column.
+                Dictionary<string, Range> columnNamesDict = Utilities.GetColumnRangeDictionary(sheet);
+                Range columnNamedName = Utilities.FindColumnLike(columnNamesDict, "Clinician Name");
+                int nameColNumber = columnNamedName.Column;
+                string nameColLetter = Utilities.GetColumnLetter(nameColNumber);
+                Range columnNamedDate = Utilities.FindColumnLike(columnNamesDict, "Date");
+                int dateColNumber = columnNamedDate.Column;
+                string dateColLetter = Utilities.GetColumnLetter(dateColNumber);
+
+                Range sortRange = sheet.get_Range("A1", letterOfLastCol + bottomRow.ToString());
+                Range nameColumn = sheet.get_Range(nameColLetter + "1", nameColLetter + bottomRow.ToString());
+                Range dateColumn = sheet.get_Range(dateColLetter + "1", dateColLetter + bottomRow.ToString());
 
                 try
                 {
